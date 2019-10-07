@@ -1,29 +1,36 @@
 // vue.config.js 配置说明
-//官方vue.config.js 参考文档 https://cli.vuejs.org/zh/config/#css-loaderoptions
+// 官方vue.config.js 参考文档 https://cli.vuejs.org/zh/config/#css-loaderoptions
 // 这里只列一部分，具体配置参考文档
+
+const path = require('path')
+
+function resolve(dir) {
+    return path.join(__dirname, dir)
+}
+
 module.exports = {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，Vue CLI 会假设你的应用是被部署在一个域名的根路径上
-    //例如 https://www.my-app.com/。如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://www.my-app.com/my-app/，则设置 baseUrl 为 /my-app/。
-    //baseUrl 从 Vue CLI 3.3 起已弃用，请使用publicPath
-    //baseUrl: process.env.NODE_ENV === "production" ? "./" : "/",
-    publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
+    // 例如 https://www.my-app.com/。如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://www.my-app.com/my-app/，则设置 baseUrl 为 /my-app/。
+    // baseUrl 从 Vue CLI 3.3 起已弃用，请使用publicPath
+    // baseUrl: process.env.NODE_ENV === "production" ? "./" : "/",
+    publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
 
     // outputDir: 在npm run build 或 yarn build 时 ，生成文件的目录名称（要和baseUrl的生产环境路径一致）
-    outputDir: "mycli3",
-    //用于放置生成的静态资源 (js、css、img、fonts) 的；（项目打包之后，静态资源会放在这个文件夹下）
-    assetsDir: "assets",
-    //指定生成的 index.html 的输出路径  (打包之后，改变系统默认的index.html的文件名)
+    outputDir: 'mycli3',
+    // 用于放置生成的静态资源 (js、css、img、fonts) 的；（项目打包之后，静态资源会放在这个文件夹下）
+    assetsDir: 'assets',
+    // 指定生成的 index.html 的输出路径  (打包之后，改变系统默认的index.html的文件名)
     // indexPath: "myIndex.html",
-    //默认情况下，生成的静态资源在它们的文件名中包含了 hash 以便更好的控制缓存。你可以通过将这个选项设为 false 来关闭文件名哈希。(false的时候就是让原来的文件名不改变)
+    // 默认情况下，生成的静态资源在它们的文件名中包含了 hash 以便更好的控制缓存。你可以通过将这个选项设为 false 来关闭文件名哈希。(false的时候就是让原来的文件名不改变)
     filenameHashing: false,
 
     //   lintOnSave：{ type:Boolean default:true } 问你是否使用eslint
     // lintOnSave: true,
-    //如果你想要在生产构建时禁用 eslint-loader，你可以用如下配置
+    // 如果你想要在生产构建时禁用 eslint-loader，你可以用如下配置
     lintOnSave: process.env.NODE_ENV !== 'production',
 
-    //是否使用包含运行时编译器的 Vue 构建版本。设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。(默认false)
+    // 是否使用包含运行时编译器的 Vue 构建版本。设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。(默认false)
     // runtimeCompiler: false,
 
     /**
@@ -36,28 +43,114 @@ module.exports = {
 
     // 它支持webPack-dev-server的所有选项
     devServer: {
-        host: "localhost",
+        host: 'localhost',
         port: 1111, // 端口号
         https: false, // https:{type:Boolean}
-        open: true, //配置自动启动浏览器
+        open: true, // 配置自动启动浏览器
         // proxy: 'http://localhost:4000' // 配置跨域处理,只有一个代理
 
         // 配置多个代理
         proxy: {
-            "/api": {
-                target: "<url>",// 要访问的接口域名
-                ws: true,// 是否启用websockets
-                changeOrigin: true, //开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+            '/api': {
+                target: '<url>', // 要访问的接口域名
+                ws: true, // 是否启用websockets
+                changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
                 pathRewrite: {
-                    '^/api': '' //这里理解成用'/api'代替target里面的地址,比如我要调用'http://40.00.100.100:3002/user/add'，直接写'/api/user/add'即可
+                    '^/api': '' // 这里理解成用'/api'代替target里面的地址,比如我要调用'http://40.00.100.100:3002/user/add'，直接写'/api/user/add'即可
                 }
             },
-            "/foo": {
-                target: "<other_url>"
+            '/foo': {
+                target: '<other_url>'
             }
         }
     },
+    //  下面的配置会和vue cli中webpack的配置合并
     configureWebpack: {
+        // provide the app's title in webpack's name field, so that
+        // it can be accessed in index.html to inject the correct title.
+        name: name,
+        resolve: {
+            alias: {
+                '@': resolve('src')
+            }
+        }
+    },
+    // 通过webpack chain库引入loader和rules
+    chainWebpack(config) {
+        config.plugins.delete('preload') // TODO: need test
+        config.plugins.delete('prefetch') // TODO: need test
 
+        // set svg-sprite-loader
+        config.module
+            .rule('svg')
+            .exclude.add(resolve('src/icons'))
+            .end()
+        config.module
+            .rule('icons')
+            .test(/\.svg$/)
+            .include.add(resolve('src/icons'))
+            .end()
+            .use('svg-sprite-loader')
+            .loader('svg-sprite-loader')
+            .options({
+                symbolId: 'icon-[name]'
+            })
+            .end()
+
+        // set preserveWhitespace
+        config.module
+            .rule('vue')
+            .use('vue-loader')
+            .loader('vue-loader')
+            .tap(options => {
+                options.compilerOptions.preserveWhitespace = true
+                return options
+            })
+            .end()
+
+        config
+        // https://webpack.js.org/configuration/devtool/#development
+            .when(process.env.NODE_ENV === 'development',
+                config => config.devtool('cheap-source-map')
+            )
+
+        config
+            .when(process.env.NODE_ENV !== 'development',
+                config => {
+                    config
+                        .plugin('ScriptExtHtmlWebpackPlugin')
+                        .after('html')
+                        .use('script-ext-html-webpack-plugin', [{
+                            // `runtime` must same as runtimeChunk name. default is `runtime`
+                            inline: /runtime\..*\.js$/
+                        }])
+                        .end()
+                    config
+                        .optimization.splitChunks({
+                            chunks: 'all',
+                            cacheGroups: {
+                                libs: {
+                                    name: 'chunk-libs',
+                                    test: /[\\/]node_modules[\\/]/,
+                                    priority: 10,
+                                    chunks: 'initial' // only package third parties that are initially dependent
+                                },
+                                elementUI: {
+                                    name: 'chunk-elementUI', // split elementUI into a single package
+                                    priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                                    test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+                                },
+                                commons: {
+                                    name: 'chunk-commons',
+                                    test: resolve('src/components'), // can customize your rules
+                                    minChunks: 3, //  minimum common number
+                                    priority: 5,
+                                    reuseExistingChunk: true
+                                }
+                            }
+                        })
+                    config.optimization.runtimeChunk('single')
+                }
+            )
     }
-};
+}
