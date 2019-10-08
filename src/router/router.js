@@ -18,8 +18,13 @@ export default new Router({
             // this generates a separate chunk (about.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import('@/views/login/login')
         }
-    ],
+    ]
     // 设置路由参数，每次改变路由滚动到最上端
     // scrollBehavior: () => ({ y: 0 })
 })
