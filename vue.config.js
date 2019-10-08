@@ -8,6 +8,8 @@ function resolve(dir) {
     return path.join(__dirname, dir)
 }
 
+const name = 'Vue Disk' // page title
+
 module.exports = {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，Vue CLI 会假设你的应用是被部署在一个域名的根路径上
